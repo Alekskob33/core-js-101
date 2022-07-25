@@ -1,3 +1,5 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-await-in-loop */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -7,10 +9,12 @@
 
 
 /**
- * Return Promise object that is resolved with string value === 'Hooray!!! She said "Yes"!',
- * if boolean value === true is passed, resolved with string value === 'Oh no, she said "No".',
- * if boolean value === false is passed, and rejected
- * with error message === 'Wrong parameter is passed! Ask her again.',
+ * Return Promise object that is:
+ * - resolved with string value === 'Hooray!!! She said "Yes"!',
+ * if boolean value === true is passed,
+ * - resolved with string value === 'Oh no, she said "No".',
+ * if boolean value === false is passed,
+ * - and rejected with error message === 'Wrong parameter is passed! Ask her again.',
  * if is not boolean value passed
  *
  * @param {boolean} isPositiveAnswer
@@ -28,8 +32,17 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
+function willYouMarryMe(isPositiveAnswer) {
+  const promise = new Promise((resolve, reject) => {
+    if (typeof isPositiveAnswer !== 'boolean') reject(new Error('Wrong parameter is passed! Ask her again.'));
+    if (isPositiveAnswer) {
+      resolve('Hooray!!! She said "Yes"!');
+    } else {
+      resolve('Oh no, she said "No".');
+    }
+  });
+
+  return promise;
 }
 
 
@@ -48,8 +61,9 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  const pomises = Promise.all(array);
+  return pomises.then((values) => values);
 }
 
 /**
@@ -71,8 +85,8 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  return Promise.race(array);
 }
 
 /**
@@ -92,8 +106,19 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+async function chainPromises(array, action) {
+  const results = [];
+
+  for (let i = 0; i < array.length; i += 1) {
+    try {
+      const x = await array[i];
+      results.push(x);
+    } catch (err) {
+      continue;
+    }
+  }
+
+  return results.reduce((a, b) => action(a, b));
 }
 
 module.exports = {
